@@ -1,34 +1,41 @@
 const items = [
-  { id: 1, name: "Mango" },
-  { id: 2, name: "Mango" },
-  { id: 3, name: "Apple" },
-  { id: 4, name: "Cherry" },
-  { id: 5, name: "Cherry" },
-  { id: 6, name: "Guava" },
+  { id: 1, name: "apple" },
+  { id: 2, name: "banana" },
+  { id: 3, name: "apple" },
+  { id: 4, name: "orange" },
+  { id: 5, name: "banana" },
 ];
 
-function getUnique(
-  items: { id: number; name: string }[]
-): { id: number; name: string }[] {
-  const itemMap = new Map();
-
-  const unique = items.filter((ele) => {
-    const val = itemMap.get(ele.name);
-    if (val !== undefined) {
-      if (ele.id < val) {
-        itemMap.delete(ele.name);
-        itemMap.set(ele.name, ele.id);
-      } else {
-        return false;
-      }
-    }
-    itemMap.set(ele.name, ele.id);
-    return true;
-  });
-
-  return unique;
+interface item {
+  id: number;
+  name: string;
 }
 
-const uniqueItems = getUnique(items);
+type ItemPropertyName = keyof item;
+
+const getUniqueItemsByProperty = (
+  itemsToCheck: item[],
+  prop: ItemPropertyName
+): item[] => {
+  const uniqueItems: item[] = [];
+
+  for (let i = 0; i < itemsToCheck.length; i++) {
+    let isDuplicate = false;
+    for (let j = 0; j < uniqueItems.length; j++) {
+      if (itemsToCheck[i][prop] === uniqueItems[j][prop]) {
+        isDuplicate = true;
+        break;
+      }
+    }
+    if (!isDuplicate) {
+      uniqueItems.push(itemsToCheck[i]);
+    }
+  }
+
+  return uniqueItems;
+};
+
+const uniqueItems = getUniqueItemsByProperty(items, "name");
+
 console.log(uniqueItems);
 
